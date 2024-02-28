@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-  const items = [{id: 1, name: "pedro"}, {id: 2, name: "Sus"}, {id: 3, name: "julius"}, {id: 4, name: "julius"}, {id: 5, name: "julius"}];
-  const cards = [{mana: 10, defense: 12, name: "Murloc", life: 8, id: 1}];
+  import { ref } from "vue";
+  const items = ref([{id: 1, name: "Montinho"}, {id: 2, name: "Freguês Carrancudo"}, {id: 3, name: "Agro"}]);
   //const items = [];
+  
 </script>
 
 <template>
-  <v-app class="container">
+  <v-app class="container-home">
     <v-main class="container-main">
 
       <div class="container-top">
@@ -39,7 +40,8 @@
 
 <style scoped>
 
-.container {
+
+.container-home {
   display: flex;
   height: 100vh;
   align-items: center;
@@ -51,7 +53,7 @@
   flex-direction: column;
   justify-content: center;
   /*background-color: green;*/
-  gap: 100px;
+  gap: 50px;
 }
 
 .container-top {
@@ -71,4 +73,5 @@
   align-items: center;
   /*background-color: blueviolet;*/
 }
+
 </style>
