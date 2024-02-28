@@ -1,74 +1,74 @@
-<script setup>
-  //let items = data: () => ({[{name: "oi"}, {name: "tchau"}]})
-  /*export default {
-    data: () => ({
-      items: [
-        {
-          title: 'Item #1',
-          value: 1,
-        },
-        {
-          title: 'Item #2',
-          value: 2,
-        },
-        {
-          title: 'Item #3',
-          value: 3,
-        },
-        {
-          title: 'Item #4',
-          value: 4,
-        },
-      ],
-    }),
-  }*/
+<script setup lang="ts">
+
+  const items = [{id: 1, name: "pedro"}, {id: 2, name: "Sus"}, {id: 3, name: "julius"}, {id: 4, name: "julius"}, {id: 5, name: "julius"}];
+  const cards = [{mana: 10, defense: 12, name: "Murloc", life: 8, id: 1}];
+  //const items = [];
 </script>
 
 <template>
-  <main class="container">
-    <h1>Start Saving your Decks</h1>
+  <v-app class="container">
+    <v-main class="container-main">
 
-    <div class="container-decks">
+      <div class="container-top">
 
-      <p>Your deck list is empty</p>
+        <h1>Start Saving your Decks</h1>
+        <v-btn prepend-icon="$vuetify" to="/save-deck"> Save Deck </v-btn>
 
-      <v-card max-width="1500" min-width="300">
-        <v-list lines="two">
+      </div>
 
-          <v-list-item
+      <div class="container-decks">
+
+        <p v-if="items.length == 0">Your deck list is empty</p>
+
+        <v-card class="container-deck-list" v-else max-width="10" min-width="300">
+          <v-list 
+            lines="two"
             :items="items"
-            :key="n"
-            :title="'Item ' + n"
-            subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit"
+            item-title="name"
+            item-value="id"
           >
-          </v-list-item>
+          </v-list>      
+        </v-card>
 
-        </v-list>      
-      </v-card>
+      </div>
 
-      <!-- 
-      <v-card max-width="1500" min-width="300">
-        <v-list :items="items"></v-list>
-      </v-card>
-      -->
-    </div>
+    </v-main>
+  </v-app>
 
-    <v-btn prepend-icon="$vuetify"> Add Deck </v-btn>
-  </main>
 </template>
 
 <style scoped>
+
 .container {
   display: flex;
   height: 100vh;
-  justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
 }
+
+.container-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /*background-color: green;*/
+  gap: 100px;
+}
+
+.container-top {
+  display: flex;
+  /*background-color: red;*/
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 1000px;
+  height: 250px;
+}
+
 .container-decks {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  /*background-color: blueviolet;*/
 }
 </style>
