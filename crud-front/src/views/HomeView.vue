@@ -1,48 +1,77 @@
-<script setup>
+<script setup lang="ts">
 
+  import { ref } from "vue";
+  const items = ref([{id: 1, name: "Montinho"}, {id: 2, name: "Freguês Carrancudo"}, {id: 3, name: "Agro"}]);
+  //const items = [];
+  
 </script>
 
 <template>
-  <main class = "container">
-    
-    <h1>Start Saving your Decks</h1>
+  <v-app class="container-home">
+    <v-main class="container-main">
 
-    <div class = "container-decks">
-      <p>Your deck list is empty</p>
-      <v-list lines="two">
-        <v-list-item
-          v-for="n in 3"
-          :key="n"
-          :title="'Item ' + n"
-          subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit"
-        ></v-list-item>
-      </v-list>            
-    </div>
+      <div class="container-top">
 
-    <v-btn prepend-icon="$vuetify">
-      Add Deck
-    </v-btn>
+        <h1>Start Saving your Decks</h1>
+        <v-btn prepend-icon="$vuetify" to="/save-deck"> Save Deck </v-btn>
 
-  </main>
+      </div>
+
+      <div class="container-decks">
+
+        <p v-if="items.length == 0">Your deck list is empty</p>
+
+        <v-card class="container-deck-list" v-else max-width="10" min-width="300">
+          <v-list 
+            lines="two"
+            :items="items"
+            item-title="name"
+            item-value="id"
+          >
+          </v-list>      
+        </v-card>
+
+      </div>
+
+    </v-main>
+  </v-app>
+
 </template>
 
 <style scoped>
-.container {
+
+
+.container-home {
   display: flex;
   height: 100vh;
-  background-color: lightblue;
-  margin: 0px;
-  padding: 0px;
-  justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
 }
-.container-decks {
-  display:flex;
+
+.container-main {
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /*background-color: green;*/
+  gap: 50px;
 }
+
+.container-top {
+  display: flex;
+  /*background-color: red;*/
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 1000px;
+  height: 250px;
+}
+
+.container-decks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  /*background-color: blueviolet;*/
+}
+
 </style>
-
-
