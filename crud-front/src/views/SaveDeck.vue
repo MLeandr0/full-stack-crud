@@ -7,6 +7,7 @@
   const cardDefense = ref("");
   const cardName = ref("");
   const cardLife = ref("");
+  const deckName = ref("");
 
   function ddCard() {
     let id = 3000;
@@ -20,31 +21,60 @@
 </script>
 
 <template>
-  <v-app class="container-save_deck">
-    <v-main class="container-main-save_deck">
 
-      <div class="container-top2">
-        <h1>Deck creation</h1>
-        <v-text-field
-          label="Deck Name"
-          hide-details="auto"
-        >
-        </v-text-field>
-      </div>
+  <v-container fluid class="fill-height  pa-md-0" >
 
-      <div class="container-card">
-        
-        <div class="container-card-input">
-          <v-text-field label="Card Cost" clearable v-model="cardCost"></v-text-field>
-          <v-text-field label="Card Life" v-model="cardLife"></v-text-field>
-          <v-text-field label="Card Defense" v-model="cardDefense"></v-text-field>
-          <v-text-field label="Card Name" v-model="cardName"></v-text-field>
-          <v-btn prepend-icon="$vuetify" @click="ddCard"> Add Card </v-btn>  
-        </div>
+    <v-container fluid class="pa-md-0">
 
-        <div>
-          <p v-if="cards.length == 0">Start adding your cards</p>
-          <v-card class="savedeck" v-else max-width="700" min-width="300" min-height="100">
+      <v-row align="center" justify="center">
+          <v-col
+            cols="8"
+            sm="4"
+          >
+            <h1>Create your deck</h1>
+            <v-text-field
+              v-model="deckName"
+              counter="20"
+              hint="Dont type a word too long"
+              label="Deck Name"
+            ></v-text-field>
+          </v-col>
+      </v-row>
+
+    </v-container>
+    
+    <v-container fluid class="pa-md-0">
+
+      <v-row align="center" justify="center">
+          <v-col cols="1">
+            <v-text-field label="Card Cost" clearable v-model="cardCost"></v-text-field>
+          </v-col>
+
+          <v-col cols="1" >
+            <v-text-field label="Card Life" v-model="cardLife"></v-text-field>
+          </v-col>
+          
+          <v-col cols="1">
+            <v-text-field label="Card Defense" v-model="cardDefense"></v-text-field>
+          </v-col>
+          
+          <v-col cols="1">
+            <v-text-field label="Card Name" v-model="cardName"></v-text-field>
+          </v-col>
+
+          <v-col cols="1">
+            <v-btn prepend-icon="$vuetify" @click="ddCard"> Add Card </v-btn>  
+          </v-col>
+          
+      </v-row>
+
+    </v-container>
+
+    <v-container fluid class="pa-md-0">
+
+      <v-row align="center" justify="center">
+        <v-col cols="6">
+          <v-card class="savedeck" min-width="300px" min-height="650px">
             <v-list 
               :lines="false"
             >
@@ -60,17 +90,26 @@
               </v-list-item>
             </v-list>      
           </v-card>
-        </div>
+        </v-col>
+      </v-row>
 
-      </div>  
+    </v-container>
 
-      <div class = "container-button">
-        <v-btn prepend-icon="$vuetify" to="/"> Done </v-btn>
-        <v-btn prepend-icon="$vuetify" to="/"> Cancel </v-btn>
-      </div>
-      
-    </v-main>
-  </v-app>
+    <v-container fluid class="pa-md-0">
+
+      <v-row align="center" justify="center">
+          <v-col cols="1">
+            <v-btn prepend-icon="$vuetify" to="/"> Done </v-btn>
+          </v-col>
+          <v-col cols="1">
+            <v-btn prepend-icon="$vuetify" to="/"> Cancel </v-btn>
+          </v-col>
+      </v-row>
+
+    </v-container>
+
+  </v-container>
+
 </template>
 
 <style>
@@ -79,6 +118,7 @@
   display: flex;
   height: 100vh;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
 }
 
