@@ -1,6 +1,8 @@
 <script setup lang="ts">
 
   import { ref } from "vue";
+  import InputText from "@/components/InputText.vue";
+  import Button from "@/components/Button.vue";
   
   const cards = ref([]);
   const cardCost = ref("");
@@ -22,7 +24,7 @@
 
 <template>
 
-  <v-container fluid class="flex-nowrap flex-column align-start justify-start fill-height pa-ma-0" >
+  <v-container fluid class="bg-blue-lighten-4 flex-nowrap flex-column align-start justify-start fill-height pa-ma-0" >
 
     <v-container fluid class="pa-ma-0">
 
@@ -31,7 +33,7 @@
             cols="8"
             sm="4"
           >
-            <h1 class="text-center">Save your deck</h1>
+            <h1 class="text-center">Work on your deck</h1>
             <v-text-field
               v-model="deckName"
               counter="20"
@@ -47,39 +49,39 @@
 
       <v-row align="center" justify="center">
           <v-col cols="1">
-            <v-text-field label="Cost" clearable v-model="cardCost">
-              <template v-slot:prepend-inner>
-                <v-icon icon="mdi-diamond-stone"></v-icon>
-              </template>
-            </v-text-field>
+            <InputText 
+              label="Cost"
+              iconName="mdi-diamond-stone" 
+              v-model="cardCost"
+            />
           </v-col>
 
           <v-col cols="1" >
-            <v-text-field label="Life" v-model="cardLife">
-              <template v-slot:prepend-inner>
-                <v-icon icon="mdi-heart"></v-icon>
-              </template>
-            </v-text-field>
+            <InputText
+              label="Life"
+              iconName="mdi-heart"
+              v-model="cardLife"
+            />
           </v-col>
           
           <v-col cols="1">
-            <v-text-field label="Defense" v-model="cardDefense">
-              <template v-slot:prepend-inner>
-                <v-icon icon="mdi-shield"></v-icon>
-              </template>
-            </v-text-field>
+            <InputText
+              label="Defense"
+              iconName="mdi-shield"
+              v-model="cardDefense"
+            />
           </v-col>
           
           <v-col cols="1">
-            <v-text-field label="Name" v-model="cardName">
-              <template v-slot:prepend-inner>
-                <v-icon icon="mdi-rename"></v-icon>
-              </template>
-            </v-text-field>
+            <InputText
+              label="Name"
+              iconName="mdi-rename"
+              v-model="cardName"
+            />
           </v-col>
 
           <v-col cols="1">
-            <v-btn prepend-icon="mdi-plus" @click="ddCard"> Add Card </v-btn>  
+            <Button iconName="mdi-plus" buttonText="Add Card" @click="ddCard"/>
           </v-col>
           
       </v-row>
@@ -90,19 +92,18 @@
 
       <v-row class="fill-height" justify="center">
         <v-col class="fill-height" cols="6">
-          <v-card class="savedeck fill-height" min-width="300px" min-height="50px">
+          <v-card class="fill-height" min-width="300px" min-height="50px">
             <v-row class="ma-6">
             <v-col v-for="(card, index) in cards" :key="index" cols="12" md="6" lg="4">
               <v-card v-if="card" class="ma-0">
                 <v-card-title>{{ card.name }}</v-card-title>
                 <v-card-text>
-                  <div>{{ card.life }}</div>
                   <div>{{ card.mana }}</div>
+                  <div>{{ card.life }}</div>
                   <div>{{ card.defense }}</div>
                 </v-card-text>
                 <v-card-actions>
-                  <!-- Trash icon for deleting the card -->
-                  <v-icon @click="deleteCard(index)">mdi-delete</v-icon>
+                  <v-icon @click="">mdi-delete</v-icon>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -118,10 +119,18 @@
 
       <v-row align="center" justify="center">
           <v-col cols="1">
-            <v-btn prepend-icon="mdi-check-bold" to="/"> Done </v-btn>
+            <Button
+              iconName="mdi-check-bold"
+              buttonText="Done"
+              to="/"
+            />
           </v-col>
           <v-col cols="1">
-            <v-btn prepend-icon="mdi-delete" to="/"> Cancel </v-btn>
+            <Button
+              iconName="mdi-delete"
+              buttonText="Cancel"
+              to="/"
+            />
           </v-col>
       </v-row>
 
