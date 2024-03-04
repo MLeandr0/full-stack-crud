@@ -1,77 +1,48 @@
 <script setup lang="ts">
 
   import { ref } from "vue";
+  import Button from "@/components/Button.vue";
+
   const items = ref([{id: 1, name: "Montinho"}, {id: 2, name: "Freguês Carrancudo"}, {id: 3, name: "Agro"}]);
   //const items = [];
   
 </script>
 
 <template>
-  <v-app class="container-home">
-    <v-main class="container-main">
+  <v-container fluid class="bg-blue-lighten-4 flex-nowrap flex-column align-center justify-center fill-height pa-ma-0">
 
-      <div class="container-top">
+    <v-row fluid align="center" justify="center">
+      <v-col
+        cols="auto"
+        class="d-flex justify-center align-center flex-column"
+      >
+        <h1>Start saving your decks</h1>
+        <Button
+          class="ma-4"
+          iconName="mdi-content-save"
+          buttonText="Save Deck"
+          to="/save-deck"
+        />
+      </v-col>
+    </v-row>
 
-        <h1>Start Saving your Decks</h1>
-        <v-btn prepend-icon="$vuetify" to="/save-deck"> Save Deck </v-btn>
-
-      </div>
-
-      <div class="container-decks">
-
-        <p v-if="items.length == 0">Your deck list is empty</p>
-
-        <v-card class="container-deck-list" v-else max-width="10" min-width="300">
+    <v-row class="ma-0" align="center" justify="center">
+      <v-card class="ma-0" min-width="550px" min-height="200px">
           <v-list 
+            class="bg-blue-accent-1"
             lines="two"
             :items="items"
             item-title="name"
             item-value="id"
           >
+          <template v-slot:append>
+            <v-btn class="bg-blue-lighten-3" icon="mdi-delete" to="/save-deck"></v-btn>  
+          </template>
           </v-list>      
         </v-card>
+    </v-row>
 
-      </div>
-
-    </v-main>
-  </v-app>
-
+  </v-container>
 </template>
 
-<style scoped>
-
-
-.container-home {
-  display: flex;
-  height: 100vh;
-  align-items: center;
-  flex-direction: column;
-}
-
-.container-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /*background-color: green;*/
-  gap: 50px;
-}
-
-.container-top {
-  display: flex;
-  /*background-color: red;*/
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 1000px;
-  height: 250px;
-}
-
-.container-decks {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  /*background-color: blueviolet;*/
-}
-
-</style>
+<style scoped></style>
