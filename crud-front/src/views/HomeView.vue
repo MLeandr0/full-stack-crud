@@ -41,37 +41,5 @@
 <style scoped>
 
 
-.container-home {
-  display: flex;
-  height: 100vh;
-  align-items: center;
-  flex-direction: column;
-}
-
-.container-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /*background-color: green;*/
-  gap: 50px;
-}
-
-.container-top {
-  display: flex;
-  /*background-color: red;*/
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 1000px;
-  height: 250px;
-}
-
-.container-decks {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  /*background-color: blueviolet;*/
-}
 
 </style>
