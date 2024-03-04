@@ -9,7 +9,7 @@
 </script>
 
 <template>
-  <v-container fluid class="bg-blue-lighten-4 flex-nowrap flex-column align-center justify-center fill-height pa-ma-0">
+  <v-container fluid class="bg-#f3f8fa flex-nowrap flex-column align-center justify-center fill-height pa-ma-0">
 
     <v-row fluid align="center" justify="center">
       <v-col
@@ -21,22 +21,23 @@
           class="ma-4"
           iconName="mdi-content-save"
           buttonText="Save Deck"
+          iconColor="#6aa9fd"
           to="/save-deck"
         />
       </v-col>
     </v-row>
 
     <v-row class="ma-0" align="center" justify="center">
-      <v-card class="ma-0" min-width="550px" min-height="200px">
+      <v-card variant="tonal" class="ma-0" min-width="550px" min-height="200px">
           <v-list 
-            class="bg-blue-accent-1"
+            class="bg-#f3f8fa"
             lines="two"
             :items="items"
             item-title="name"
             item-value="id"
           >
           <template v-slot:append>
-            <v-btn class="bg-blue-lighten-3" icon="mdi-delete" to="/save-deck"></v-btn>  
+            <v-btn color="#F4511E" class="bg-#6aa9fd" icon="mdi-delete" to="/save-deck"></v-btn>  
           </template>
           </v-list>      
         </v-card>
@@ -45,4 +46,8 @@
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+*{
+  color: #051b22;
+}
+</style>
