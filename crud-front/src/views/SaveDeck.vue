@@ -24,7 +24,7 @@
 
 <template>
 
-  <v-container fluid class="bg-blue-lighten-4 flex-nowrap flex-column align-start justify-start fill-height pa-ma-0" >
+  <v-container fluid class="bg-#f7fafc flex-nowrap flex-column align-start justify-start fill-height pa-ma-0" >
 
     <v-container fluid class="pa-ma-0">
 
@@ -81,7 +81,7 @@
           </v-col>
 
           <v-col cols="1">
-            <Button iconName="mdi-plus" buttonText="Add Card" @click="ddCard"/>
+            <Button iconColor="#6aa9fd" iconName="mdi-plus" buttonText="Add Card" @click="ddCard"/>
           </v-col>
           
       </v-row>
@@ -92,10 +92,10 @@
 
       <v-row class="fill-height" justify="center">
         <v-col class="fill-height" cols="6">
-          <v-card class="fill-height" min-width="300px" min-height="50px">
+          <v-card variant="tonal" class="fill-height" min-width="300px" min-height="50px">
             <v-row class="ma-6">
             <v-col v-for="(card, index) in cards" :key="index" cols="12" md="6" lg="4">
-              <v-card v-if="card" class="ma-0">
+              <v-card v-if="card" color="#6a94a2" class="ma-0">
                 <v-card-title>{{ card.name }}</v-card-title>
                 <v-card-text>
                   <div>{{ card.mana }}</div>
@@ -122,6 +122,7 @@
             <Button
               iconName="mdi-check-bold"
               buttonText="Done"
+              iconColor="#6aa9fd"
               to="/"
             />
           </v-col>
@@ -129,6 +130,7 @@
             <Button
               iconName="mdi-delete"
               buttonText="Cancel"
+              iconColor="#6aa9fd"
               to="/"
             />
           </v-col>
@@ -142,6 +144,8 @@
 
 <style>
 
-
+* {
+  color: #051b22;
+}
 
 </style>

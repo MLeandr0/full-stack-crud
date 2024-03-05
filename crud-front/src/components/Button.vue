@@ -3,10 +3,11 @@
     const props = defineProps<{
         iconName: string;
         buttonText: string;
+        iconColor: string;
     }>();
 
 </script>
 
 <template>
-    <v-btn class="bg-blue-lighten-3" :prepend-icon="props.iconName"> {{ props.buttonText }} </v-btn>  
+    <v-btn :color="props.iconColor" :prepend-icon="props.iconName"> {{ props.buttonText }} </v-btn>  
 </template>
