@@ -6,11 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-
 @Data
 @Entity
 public class Card {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long cardId;
@@ -18,4 +16,5 @@ public class Card {
     private int cardMana;
     private int cardShield;
     private int cardLife;
+
 }
