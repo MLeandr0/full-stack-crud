@@ -17,24 +17,27 @@ import study.crudback.model.Card;
 import study.crudback.repository.CardRepository;
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping("/api/cards")
 public class CardController {
 
-    @Autowired
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
-    @GetMapping("/get-card/{id}")
-    public ResponseEntity<Optional<Card>> getCard(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(cardRepository.findById(id));
-        
+    @Autowired
+    public CardController(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
     }
 
-    @PostMapping("/save-card")
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Card>> getCard(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(cardRepository.findById(id));
+    }
+
+    @PostMapping
     public ResponseEntity<Card> createCard(@RequestBody Card card) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardRepository.save(card));
     }
 
-    @DeleteMapping("/delete-card/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Card> delete(@PathVariable Long id) {
         cardRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
