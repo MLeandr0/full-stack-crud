@@ -1,6 +1,6 @@
-# auto-study
+# auto-study front-end
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the front-end of a simple CRUD study project, using technologies and languages like TypeScript, Vue.js and Vuetify.
 
 ## Recommended IDE Setup
 
@@ -32,4 +32,10 @@ npm run build
 
 ```sh
 npm run lint
+```
+
+### Run prettier
+
+```sh
+npm run format
 ```
