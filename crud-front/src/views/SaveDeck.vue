@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router"
-import { ref, defineProps, onMounted } from "vue"
-import axios from "axios"
-import InputText from "@/components/InputText.vue"
-import Button from "@/components/Button.vue"
+import { useRouter } from 'vue-router'
+import { ref, defineProps, onMounted } from 'vue'
+import axios from 'axios'
+import InputText from '@/components/InputText.vue'
+import Button from '@/components/Button.vue'
 
 const router = useRouter()
 const cardCost = ref<number | string>()
@@ -21,10 +21,10 @@ const props = defineProps<Props>()
 const isItSavingQuery = ref<string>(
   Array.isArray(router.currentRoute.value.query.isItSaving)
     ? router.currentRoute.value.query.isItSaving[0]
-    : router.currentRoute.value.query.isItSaving || "0"
-);
+    : router.currentRoute.value.query.isItSaving || '0'
+)
 
-deckName.value = props.deckName === undefined ? "" : props.deckName
+deckName.value = props.deckName === undefined ? '' : props.deckName
 
 interface Card {
   cardId: number
@@ -42,7 +42,7 @@ interface Deck {
 }
 
 const currentDeck = ref<Deck>({
-  deckName: "",
+  deckName: '',
   cards: [],
   deckId: 0
 })
@@ -51,12 +51,12 @@ const tempCards = ref<Card[]>([])
 
 async function addCardLocally() {
   try {
-    const manaValue = Number(cardCost.value);
-    const defenseValue = Number(cardDefense.value);
-    const lifeValue = Number(cardLife.value);
+    const manaValue = Number(cardCost.value)
+    const defenseValue = Number(cardDefense.value)
+    const lifeValue = Number(cardLife.value)
 
     if (isNaN(manaValue) || isNaN(defenseValue)) {
-      throw new Error('Invalid input for mana or defense.');
+      throw new Error('Invalid input for mana or defense.')
     }
 
     tempCards.value.push({
@@ -66,15 +66,14 @@ async function addCardLocally() {
       cardDefense: defenseValue,
       cardLife: lifeValue,
       deckId: 0
-    });
+    })
 
-    clearCardInfoInputs();
+    clearCardInfoInputs()
   } catch (error) {
-    console.error('Error adding card to deck', error);
-    throw error;
+    console.error('Error adding card to deck', error)
+    throw error
   }
 }
-
 
 function clearCardInfoInputs() {
   cardCost.value = ''
@@ -86,24 +85,22 @@ function clearCardInfoInputs() {
 async function createDeck() {
   try {
     const response = await axios.post('http://localhost:8081/api/decks', {
-      deckName: deckName.value,
+      deckName: deckName.value
     })
-    await insertCardToDeck(response.data.deckId  ,tempCards.value)
+    await insertCardToDeck(response.data.deckId, tempCards.value)
   } catch (error) {
-    console.error("Error creating deck", error)
+    console.error('Error creating deck', error)
     throw error
   }
-  navigateToHomeScreen()//mudar o nome depois :3
+  navigateToHomeScreen() //mudar o nome depois :3
 }
 
 async function insertCardToDeck(deckId: number, temp: Card[]) {
-  for(let i = 0; i < temp.length; i++) {
+  for (let i = 0; i < temp.length; i++) {
     temp[i].deckId = deckId
     try {
-      await axios.post(`http://localhost:8081/api/decks/${deckId}/cards`, temp[i]);
-    } catch (error) {
-      
-    }
+      await axios.post(`http://localhost:8081/api/decks/${deckId}/cards`, temp[i])
+    } catch (error) {}
   }
   currentDeck.value.deckName = ''
   currentDeck.value.deckId = 0
@@ -116,7 +113,7 @@ async function editDeck(deckId: number) {
     await axios.put(`http://localhost:8081/api/decks/${deckId}`, {
       deckName: deckName.value,
       deckId: deckId
-    });
+    })
 
     await insertCardToDeck(deckId, tempCards.value)
 
@@ -125,31 +122,28 @@ async function editDeck(deckId: number) {
     currentDeck.value.cards = []
     tempCards.value = []
     navigateToHomeScreen()
-
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 async function getDeckCards(deckId: number): Promise<any> {
-  if(isItSavingQuery.value == "1") {
+  if (isItSavingQuery.value == '1') {
     try {
       const response = await axios.get(`http://localhost:8081/api/decks/${deckId}/cards`)
       tempCards.value = response.data
     } catch (error) {
-      console.error("Error displaying cards of the deck", error)
+      console.error('Error displaying cards of the deck', error)
       throw error
     }
   }
 }
 
 async function decideDeckAction() {
-  if (isItSavingQuery.value === "1") {
+  if (isItSavingQuery.value === '1') {
     await editDeck(Number(props.deckId))
-  } else if (isItSavingQuery.value === "0") {
+  } else if (isItSavingQuery.value === '0') {
     currentDeck.value.cards = tempCards.value
     await createDeck()
-  } else throw ("Error unknown value");
+  } else throw 'Error unknown value'
 }
 
 async function deleteCardFromDeck(cardId: number) {
@@ -168,16 +162,12 @@ function navigateToHomeScreen() {
 }
 
 onMounted(() => {
-  getDeckCards(+props.deckId);
-});
-
+  getDeckCards(+props.deckId)
+})
 </script>
 
 <template>
-  <v-container
-    fluid
-    class="flex-nowrap flex-column align-start justify-start fill-height pa-ma-0"
-  >
+  <v-container fluid class="flex-nowrap flex-column align-start justify-start fill-height pa-ma-0">
     <v-container fluid class="pa-ma-0">
       <v-row align="center" justify="center">
         <v-col cols="8" sm="4">
@@ -212,7 +202,12 @@ onMounted(() => {
         </v-col>
 
         <v-col cols="2">
-          <Button iconColor="#6aa9fd" iconName="mdi-plus" buttonText="Add Card" @click="addCardLocally" />
+          <Button
+            iconColor="#6aa9fd"
+            iconName="mdi-plus"
+            buttonText="Add Card"
+            @click="addCardLocally"
+          />
         </v-col>
       </v-row>
     </v-container>
