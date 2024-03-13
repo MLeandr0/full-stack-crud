@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router"
-import { onMounted, ref} from "vue"
-import axios from "axios"
-import Button from "@/components/Button.vue"
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import Button from '@/components/Button.vue'
 
 interface Card {
   cardId: number
@@ -24,21 +24,21 @@ const router = useRouter()
 
 async function getDecks(): Promise<void> {
   try {
-    const deckData = await getData('http://localhost:8081/api/decks');
-    decks.value = deckData;
+    const deckData = await getData('http://localhost:8081/api/decks')
+    decks.value = deckData
   } catch (error) {
-    console.error('Error getting data from the database');
+    console.error('Error getting data from the database')
     throw error
   }
 }
 
 async function getData(url: string): Promise<any> {
   try {
-    const response = await axios.get(url);
-    return response.data;
+    const response = await axios.get(url)
+    return response.data
   } catch (error) {
-    console.error(`Error fetching data from ${url}:`, error);
-    throw error;
+    console.error(`Error fetching data from ${url}:`, error)
+    throw error
   }
 }
 
@@ -53,28 +53,27 @@ async function deleteDeck(deckId: number) {
 
 function navigateToEditDeck(deck: Deck) {
   router.push({
-    name: "save",
+    name: 'save',
     params: {
       deckName: deck.deckName,
-      deckId: deck.deckId,
+      deckId: deck.deckId
     },
     query: {
-      isItSaving: "1"
+      isItSaving: '1'
     }
   })
 }
 
 function navigateToSaveDeck() {
   router.push({
-    name: "save",
-    params: undefined,
+    name: 'save',
+    params: undefined
   })
 }
 
 onMounted(() => {
   getDecks()
 })
-
 </script>
 
 <template>
@@ -96,8 +95,16 @@ onMounted(() => {
     </v-row>
 
     <v-row class="ma-0" align="center" justify="center">
-      <v-card class="pa-2 ma-0 d-flex flex-column ga-4 rounded" min-width="550px" min-height="200px">
-        <v-list-item class="bg-grey-lighten-4 rounded pa-3" v-for="deck in decks" :key="deck.deckId">
+      <v-card
+        class="pa-2 ma-0 d-flex flex-column ga-4 rounded"
+        min-width="550px"
+        min-height="200px"
+      >
+        <v-list-item
+          class="bg-grey-lighten-4 rounded pa-3"
+          v-for="deck in decks"
+          :key="deck.deckId"
+        >
           <v-list-item-title>
             {{ deck.deckName }}
           </v-list-item-title>
@@ -111,13 +118,14 @@ onMounted(() => {
               @click="deleteDeck(deck.deckId)"
             >
             </v-btn>
-            <v-btn 
+            <v-btn
               width="40px"
               height="40px"
-              color="#6aa9fd" 
-              icon="mdi-pencil" 
-              class="ml-2 rounded" 
-              @click="navigateToEditDeck(deck)">
+              color="#6aa9fd"
+              icon="mdi-pencil"
+              class="ml-2 rounded"
+              @click="navigateToEditDeck(deck)"
+            >
             </v-btn>
           </template>
         </v-list-item>

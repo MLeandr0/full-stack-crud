@@ -13,4 +13,4 @@ This is a auto-study project to practice and learn the technologies and language
 
 ## Architecture
 
-to-do.
+The architecture will be in layers, where the front-end will be the first layer, then followed by the back-end divided into two layers: Spring Boot as the second and the database with its interface as the last layer.
