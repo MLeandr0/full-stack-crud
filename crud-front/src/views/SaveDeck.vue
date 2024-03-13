@@ -1,151 +1,266 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router"
+import { ref, defineProps, onMounted } from "vue"
+import axios from "axios"
+import InputText from "@/components/InputText.vue"
+import Button from "@/components/Button.vue"
 
-  import { ref } from "vue";
-  import InputText from "@/components/InputText.vue";
-  import Button from "@/components/Button.vue";
-  
-  const cards = ref([]);
-  const cardCost = ref("");
-  const cardDefense = ref("");
-  const cardName = ref("");
-  const cardLife = ref("");
-  const deckName = ref("");
+const router = useRouter()
+const cardCost = ref<number | string>()
+const cardDefense = ref<number | string>()
+const cardName = ref<string>()
+const cardLife = ref<number | string>()
+const deckName = ref<string>()
 
-  function ddCard() {
-    //let id = 3000;
-    cards.value.push({mana: cardCost.value, defense: cardDefense.value, name: cardName.value, life: cardLife.value, id: 3000})
-    cardCost.value = "";
-    cardDefense.value = "";
-    cardName.value = "";
-    cardLife.value = "";
+interface Props {
+  deckName?: string
+  deckId?: string
+}
+
+const props = defineProps<Props>()
+const isItSavingQuery = ref<string>(
+  Array.isArray(router.currentRoute.value.query.isItSaving)
+    ? router.currentRoute.value.query.isItSaving[0]
+    : router.currentRoute.value.query.isItSaving || "0"
+);
+
+deckName.value = props.deckName === undefined ? "" : props.deckName
+
+interface Card {
+  cardId: number
+  cardName: string
+  cardLife: number
+  cardDefense: number
+  cardMana: number
+  deckId: number
+}
+
+interface Deck {
+  deckId: number
+  deckName: string
+  cards: Card[]
+}
+
+const currentDeck = ref<Deck>({
+  deckName: "",
+  cards: [],
+  deckId: 0
+})
+
+const tempCards = ref<Card[]>([])
+
+async function addCardLocally() {
+  try {
+    const manaValue = Number(cardCost.value);
+    const defenseValue = Number(cardDefense.value);
+    const lifeValue = Number(cardLife.value);
+
+    if (isNaN(manaValue) || isNaN(defenseValue)) {
+      throw new Error('Invalid input for mana or defense.');
+    }
+
+    tempCards.value.push({
+      cardId: 0,
+      cardName: cardName.value || '',
+      cardMana: manaValue,
+      cardDefense: defenseValue,
+      cardLife: lifeValue,
+      deckId: 0
+    });
+
+    clearCardInfoInputs();
+  } catch (error) {
+    console.error('Error adding card to deck', error);
+    throw error;
   }
+}
+
+
+function clearCardInfoInputs() {
+  cardCost.value = ''
+  cardDefense.value = ''
+  cardName.value = ''
+  cardLife.value = ''
+}
+
+async function createDeck() {
+  try {
+    const response = await axios.post('http://localhost:8081/api/decks', {
+      deckName: deckName.value,
+    })
+    await insertCardToDeck(response.data.deckId  ,tempCards.value)
+  } catch (error) {
+    console.error("Error creating deck", error)
+    throw error
+  }
+  navigateToHomeScreen()//mudar o nome depois :3
+}
+
+async function insertCardToDeck(deckId: number, temp: Card[]) {
+  for(let i = 0; i < temp.length; i++) {
+    temp[i].deckId = deckId
+    try {
+      await axios.post(`http://localhost:8081/api/decks/${deckId}/cards`, temp[i]);
+    } catch (error) {
+      
+    }
+  }
+  currentDeck.value.deckName = ''
+  currentDeck.value.deckId = 0
+  currentDeck.value.cards = []
+  tempCards.value = []
+}
+
+async function editDeck(deckId: number) {
+  try {
+    await axios.put(`http://localhost:8081/api/decks/${deckId}`, {
+      deckName: deckName.value,
+      deckId: deckId
+    });
+
+    await insertCardToDeck(deckId, tempCards.value)
+
+    currentDeck.value.deckName = ''
+    currentDeck.value.deckId = 0
+    currentDeck.value.cards = []
+    tempCards.value = []
+    navigateToHomeScreen()
+
+  } catch (error) {
+    
+  }
+}
+
+async function getDeckCards(deckId: number): Promise<any> {
+  if(isItSavingQuery.value == "1") {
+    try {
+      const response = await axios.get(`http://localhost:8081/api/decks/${deckId}/cards`)
+      tempCards.value = response.data
+    } catch (error) {
+      console.error("Error displaying cards of the deck", error)
+      throw error
+    }
+  }
+}
+
+async function decideDeckAction() {
+  if (isItSavingQuery.value === "1") {
+    await editDeck(Number(props.deckId))
+  } else if (isItSavingQuery.value === "0") {
+    currentDeck.value.cards = tempCards.value
+    await createDeck()
+  } else throw ("Error unknown value");
+}
+
+async function deleteCardFromDeck(cardId: number) {
+  try {
+    await axios.delete(`http://localhost:8081/api/decks/${props.deckId}/cards/${cardId}`)
+    getDeckCards(Number(props.deckId))
+  } catch (error) {
+    console.error(`Error deleting card ${cardId} from ${props.deckId}`, error)
+  }
+}
+
+function navigateToHomeScreen() {
+  router.push({
+    name: 'home'
+  })
+}
+
+onMounted(() => {
+  getDeckCards(+props.deckId);
+});
 
 </script>
 
 <template>
-
-  <v-container fluid class="bg-#f7fafc flex-nowrap flex-column align-start justify-start fill-height pa-ma-0" >
-
+  <v-container
+    fluid
+    class="flex-nowrap flex-column align-start justify-start fill-height pa-ma-0"
+  >
     <v-container fluid class="pa-ma-0">
-
       <v-row align="center" justify="center">
-          <v-col
-            cols="8"
-            sm="4"
-          >
-            <h1 class="text-center">Work on your deck</h1>
-            <v-text-field
-              v-model="deckName"
-              counter="20"
-              hint="Dont type a word too long"
-              label="Deck Name"
-            ></v-text-field>
-          </v-col>
+        <v-col cols="8" sm="4">
+          <h1 class="text-center">Work on your deck</h1>
+          <v-text-field
+            variant="underlined"
+            v-model="deckName"
+            counter="20"
+            hint="Dont type a word too long"
+            label="Deck Name"
+          ></v-text-field>
+        </v-col>
       </v-row>
-
     </v-container>
-    
+
     <v-container fluid class="pa-ma-0">
-
       <v-row align="center" justify="center">
-          <v-col cols="1">
-            <InputText 
-              label="Cost"
-              iconName="mdi-diamond-stone" 
-              v-model="cardCost"
-            />
-          </v-col>
+        <v-col cols="2">
+          <InputText label="Cost" iconName="mdi-diamond-stone" v-model="cardCost" />
+        </v-col>
 
-          <v-col cols="1" >
-            <InputText
-              label="Life"
-              iconName="mdi-heart"
-              v-model="cardLife"
-            />
-          </v-col>
-          
-          <v-col cols="1">
-            <InputText
-              label="Defense"
-              iconName="mdi-shield"
-              v-model="cardDefense"
-            />
-          </v-col>
-          
-          <v-col cols="1">
-            <InputText
-              label="Name"
-              iconName="mdi-rename"
-              v-model="cardName"
-            />
-          </v-col>
+        <v-col cols="2">
+          <InputText label="Life" iconName="mdi-heart" v-model="cardLife" />
+        </v-col>
 
-          <v-col cols="1">
-            <Button iconColor="#6aa9fd" iconName="mdi-plus" buttonText="Add Card" @click="ddCard"/>
-          </v-col>
-          
+        <v-col cols="2">
+          <InputText label="Defense" iconName="mdi-shield" v-model="cardDefense" />
+        </v-col>
+
+        <v-col cols="2">
+          <InputText label="Name" iconName="mdi-rename" v-model="cardName" />
+        </v-col>
+
+        <v-col cols="2">
+          <Button iconColor="#6aa9fd" iconName="mdi-plus" buttonText="Add Card" @click="addCardLocally" />
+        </v-col>
       </v-row>
-
     </v-container>
 
     <v-container fluid class="flex-1-1 pa-md-0">
-
       <v-row class="fill-height" justify="center">
         <v-col class="fill-height" cols="6">
-          <v-card variant="tonal" class="fill-height" min-width="300px" min-height="50px">
+          <v-card class="fill-height bg-grey-lighten-4" min-width="300px" min-height="50px">
             <v-row class="ma-6">
-            <v-col v-for="(card, index) in cards" :key="index" cols="12" md="6" lg="4">
-              <v-card v-if="card" color="#6a94a2" class="ma-0">
-                <v-card-title>{{ card.name }}</v-card-title>
-                <v-card-text>
-                  <div>{{ card.mana }}</div>
-                  <div>{{ card.life }}</div>
-                  <div>{{ card.defense }}</div>
-                </v-card-text>
-                <v-card-actions>
-                  <v-icon @click="">mdi-delete</v-icon>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-
+              <v-col v-for="(cards, index) in tempCards" :key="index" cols="12" md="6" lg="4">
+                <v-card v-if="cards" class="ma-0 bg-grey-lighten-5">
+                  <v-card-title>{{ cards.cardName }}</v-card-title>
+                  <v-card-text>
+                    <div>{{ cards.cardMana }}</div>
+                    <div>{{ cards.cardLife }}</div>
+                    <div>{{ cards.cardDefense }}</div>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-icon @click="deleteCardFromDeck(cards.cardId)">mdi-delete</v-icon>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
-
     </v-container>
 
     <v-container fluid class="pa-ma-0">
-
       <v-row align="center" justify="center">
-          <v-col cols="1">
-            <Button
-              iconName="mdi-check-bold"
-              buttonText="Done"
-              iconColor="#6aa9fd"
-              to="/"
-            />
-          </v-col>
-          <v-col cols="1">
-            <Button
-              iconName="mdi-delete"
-              buttonText="Cancel"
-              iconColor="#6aa9fd"
-              to="/"
-            />
-          </v-col>
+        <v-col cols="2">
+          <Button
+            iconName="mdi-check-bold"
+            buttonText="Done"
+            iconColor="#6aa9fd"
+            @click="decideDeckAction()"
+          />
+        </v-col>
+        <v-col cols="2">
+          <Button iconName="mdi-cancel" buttonText="Cancel" iconColor="#F4511E" to="/" />
+        </v-col>
       </v-row>
-
     </v-container>
-
   </v-container>
-
 </template>
 
 <style>
-
 * {
   color: #051b22;
 }
-
 </style>
