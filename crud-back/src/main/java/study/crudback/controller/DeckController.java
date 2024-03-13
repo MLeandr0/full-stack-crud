@@ -45,7 +45,7 @@ public class DeckController {
         if (deck == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    
+
         cardRepository.deleteAll(deck.getCards());
         deckRepository.deleteById(id);
     
@@ -53,8 +53,11 @@ public class DeckController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Deck> updateDeck(@PathVariable("id") long id, @RequestBody Deck deck) {
-        return ResponseEntity.status(HttpStatus.OK).body(deckRepository.save(deck));
+    public ResponseEntity<Deck> updateDeck(@PathVariable("id") Long id, @RequestBody Deck deck) {
+        Deck savedDeck = deckRepository.findById(id).orElseThrow();
+        savedDeck.setDeckName(deck.getDeckName());
+
+        return ResponseEntity.status(HttpStatus.OK).body(deckRepository.save(savedDeck));
     }
 
     @GetMapping
@@ -62,15 +65,26 @@ public class DeckController {
 
         List<Deck> decks = new ArrayList<Deck>();
         deckRepository.findAll().forEach(decks::add);
-
         return new ResponseEntity<>(decks, HttpStatus.OK);
     }
-
+    
     @PostMapping("/{deckId}/cards")
     public ResponseEntity<Card> addCardToDeck(@PathVariable Long deckId, @RequestBody Card card) {
         Deck deck = deckRepository.findById(deckId).orElseThrow();
+        long cardId = card.getCardId();
+
+        if (deck.getCards().stream().anyMatch(c -> c.getCardId() == cardId)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(card);
+        }
+
         card.setDeck(deck);
         card = cardRepository.save(card);
+        List<Card> cards = deck.getCards();
+        cards.add(card);
+        deck.setCards(cards);
+
+        deckRepository.save(deck);
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(card);
     }
 

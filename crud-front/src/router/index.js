@@ -11,7 +11,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/save-deck/:deckName?/:deckId?/isItSaving?',
+      path: '/save-deck/:deckName?/:deckId?',
       name: 'save',
       component: SaveDeck,
       props: true

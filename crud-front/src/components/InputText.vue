@@ -6,7 +6,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <v-text-field variant="underlined" :label="props.label" clearable>
+  <v-text-field width="50px" variant="underlined" :label="props.label" clearable>
     <template v-slot:prepend-inner>
       <v-icon :icon="props.iconName"></v-icon>
     </template>

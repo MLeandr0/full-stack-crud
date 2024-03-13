@@ -7,5 +7,5 @@ const props = defineProps<{
 </script>
 
 <template>
-  <v-btn :color="props.iconColor" :prepend-icon="props.iconName"> {{ props.buttonText }} </v-btn>
+  <v-btn width="550px"  :color="props.iconColor" :prepend-icon="props.iconName"> {{ props.buttonText }} </v-btn>
 </template>
