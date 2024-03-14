@@ -13,12 +13,12 @@ const cardLife = ref<number | string>()
 const deckName = ref<string>()
 
 interface Props {
-  deckName?: string
-  deckId?: string
+  deckName: string
+  deckId: string
 }
 
 const props = defineProps<Props>()
-const isItSavingQuery = ref<string>(
+const isItSavingQuery = ref(
   Array.isArray(router.currentRoute.value.query.isItSaving)
     ? router.currentRoute.value.query.isItSaving[0]
     : router.currentRoute.value.query.isItSaving || '0'
@@ -126,7 +126,7 @@ async function editDeck(deckId: number) {
 }
 
 async function getDeckCards(deckId: number): Promise<any> {
-  if (isItSavingQuery.value == '1') {
+  if (props.deckId !== undefined && isItSavingQuery.value == '1') {
     try {
       const response = await axios.get(`http://localhost:8081/api/decks/${deckId}/cards`)
       tempCards.value = response.data
