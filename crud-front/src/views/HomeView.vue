@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
-import Button from '@/components/Button.vue'
+import Button from '../components/Button.vue'
 
 interface Card {
   cardId: number
