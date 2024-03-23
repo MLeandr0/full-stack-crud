@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
-import Button from '../components/Button.vue'
+import Button from '@/components/ButtonComponent.vue'
 
 interface Card {
   cardId: number
@@ -19,12 +19,13 @@ interface Deck {
   cards: Card[]
 }
 
+const url = import.meta.env.VITE_API_URL
 const decks = ref<Deck[]>([])
 const router = useRouter()
 
 async function getDecks(): Promise<void> {
   try {
-    const deckData = await getData('http://localhost:8081/api/decks')
+    const deckData = await getData(`${url}/decks`)
     decks.value = deckData
   } catch (error) {
     console.error('Error getting data from the database')
@@ -44,7 +45,7 @@ async function getData(url: string): Promise<any> {
 
 async function deleteDeck(deckId: number) {
   try {
-    await axios.delete(`http://localhost:8081/api/decks/${deckId}`)
+    await axios.delete(`${url}/decks/${deckId}`)
     getDecks()
   } catch (error) {
     console.error(`Error deleting deck ${deckId}`, error)

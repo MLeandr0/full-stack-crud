@@ -3,14 +3,15 @@ import { useRouter } from 'vue-router'
 import { ref, defineProps, onMounted } from 'vue'
 import axios from 'axios'
 import InputText from '@/components/InputText.vue'
-import Button from '@/components/Button.vue'
+import Button from '@/components/ButtonComponent.vue'
 
 const router = useRouter()
 const cardCost = ref<number | string>()
 const cardDefense = ref<number | string>()
 const cardName = ref<string>()
 const cardLife = ref<number | string>()
-const deckName = ref<string>()
+const localDeckName = ref<string>()
+const url = import.meta.env.VITE_API_URL
 
 interface Props {
   deckName: string
@@ -24,7 +25,7 @@ const isItSavingQuery = ref(
     : router.currentRoute.value.query.isItSaving || '0'
 )
 
-deckName.value = props.deckName === undefined ? '' : props.deckName
+localDeckName.value = props.deckName === undefined ? '' : props.deckName
 
 interface Card {
   cardId: number
@@ -84,23 +85,25 @@ function clearCardInfoInputs() {
 
 async function createDeck() {
   try {
-    const response = await axios.post('http://localhost:8081/api/decks', {
-      deckName: deckName.value
+    const response = await axios.post(`${url}/decks`, {
+      deckName: localDeckName.value
     })
     await insertCardToDeck(response.data.deckId, tempCards.value)
   } catch (error) {
     console.error('Error creating deck', error)
     throw error
   }
-  navigateToHomeScreen() //mudar o nome depois :3
+  navigateToHomeScreen()
 }
 
 async function insertCardToDeck(deckId: number, temp: Card[]) {
   for (let i = 0; i < temp.length; i++) {
     temp[i].deckId = deckId
     try {
-      await axios.post(`http://localhost:8081/api/decks/${deckId}/cards`, temp[i])
-    } catch (error) {}
+      await axios.post(`${url}/decks/${deckId}/cards`, temp[i])
+    } catch (error) {
+      return { success: false, error }
+    }
   }
   currentDeck.value.deckName = ''
   currentDeck.value.deckId = 0
@@ -110,8 +113,8 @@ async function insertCardToDeck(deckId: number, temp: Card[]) {
 
 async function editDeck(deckId: number) {
   try {
-    await axios.put(`http://localhost:8081/api/decks/${deckId}`, {
-      deckName: deckName.value,
+    await axios.put(`${url}/decks/${deckId}`, {
+      deckName: localDeckName.value,
       deckId: deckId
     })
 
@@ -122,13 +125,16 @@ async function editDeck(deckId: number) {
     currentDeck.value.cards = []
     tempCards.value = []
     navigateToHomeScreen()
-  } catch (error) {}
+    return { success: true }
+  } catch (error) {
+    return { success: false, error }
+  }
 }
 
 async function getDeckCards(deckId: number): Promise<any> {
   if (props.deckId !== undefined && isItSavingQuery.value == '1') {
     try {
-      const response = await axios.get(`http://localhost:8081/api/decks/${deckId}/cards`)
+      const response = await axios.get(`${url}/decks/${deckId}/cards`)
       tempCards.value = response.data
     } catch (error) {
       console.error('Error displaying cards of the deck', error)
@@ -148,7 +154,7 @@ async function decideDeckAction() {
 
 async function deleteCardFromDeck(cardId: number) {
   try {
-    await axios.delete(`http://localhost:8081/api/decks/${props.deckId}/cards/${cardId}`)
+    await axios.delete(`${url}/decks/${props.deckId}/cards/${cardId}`)
     getDeckCards(Number(props.deckId))
   } catch (error) {
     console.error(`Error deleting card ${cardId} from ${props.deckId}`, error)
@@ -174,7 +180,7 @@ onMounted(() => {
           <h1 class="text-center">Work on your deck</h1>
           <v-text-field
             variant="underlined"
-            v-model="deckName"
+            v-model="localDeckName"
             counter="20"
             hint="Dont type a word too long"
             label="Deck Name"
