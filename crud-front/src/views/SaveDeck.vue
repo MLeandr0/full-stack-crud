@@ -48,6 +48,7 @@ const currentDeck = ref<Deck>({
   deckId: 0
 })
 
+const displayCardCollection = ref<Card[]>([])
 const tempCards = ref<Card[]>([])
 
 async function addCardLocally() {
@@ -76,6 +77,7 @@ async function addCardLocally() {
   }
 }
 
+
 function clearCardInfoInputs() {
   cardCost.value = ''
   cardDefense.value = ''
@@ -97,19 +99,24 @@ async function createDeck() {
 }
 
 async function insertCardToDeck(deckId: number, temp: Card[]) {
-  for (let i = 0; i < temp.length; i++) {
-    temp[i].deckId = deckId
-    try {
-      await axios.post(`${url}/decks/${deckId}/cards`, temp[i])
-    } catch (error) {
-      return { success: false, error }
+  try {
+    const response = await axios.post(`${url}/decks/${deckId}/cards`, temp)
+    if (response.status === 201) {
+      currentDeck.value.cards = []
+      tempCards.value = []
+      currentDeck.value.deckName = ''
+      currentDeck.value.deckId = 0
+      return { success: true }
+    } else {
+
+      return { success: false, error: response.statusText }
     }
+  } catch (error) {
+    console.error('Error inserting cards to deck', error)
+    return { success: false, error }
   }
-  currentDeck.value.deckName = ''
-  currentDeck.value.deckId = 0
-  currentDeck.value.cards = []
-  tempCards.value = []
 }
+
 
 async function editDeck(deckId: number) {
   try {
