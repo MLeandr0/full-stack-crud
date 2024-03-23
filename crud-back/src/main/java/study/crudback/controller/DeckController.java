@@ -8,7 +8,6 @@ import study.crudback.model.Card;
 import study.crudback.repository.CardRepository;
 import study.crudback.repository.DeckRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +26,6 @@ public class DeckController {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
 
-    @Autowired
     public DeckController(DeckRepository deckRepository, CardRepository cardRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
