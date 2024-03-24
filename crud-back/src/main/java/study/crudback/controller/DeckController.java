@@ -61,31 +61,30 @@ public class DeckController {
     @GetMapping
     public ResponseEntity<List<Deck>> getAllDecks() {
 
-        List<Deck> decks = new ArrayList<Deck>();
-        deckRepository.findAll().forEach(decks::add);
-        return new ResponseEntity<>(decks, HttpStatus.OK);
+        List<Deck> decks = deckRepository.findAll();
+        return ResponseEntity.ok(decks);
     }
-    
+
     @PostMapping("/{deckId}/cards")
-    public ResponseEntity<Card> addCardToDeck(@PathVariable Long deckId, @RequestBody Card card) {
-        Deck deck = deckRepository.findById(deckId).orElseThrow();
-        long cardId = card.getCardId();
-
-        if (deck.getCards().stream().anyMatch(c -> c.getCardId() == cardId)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(card);
+    public ResponseEntity<List<Card>> addCardsToDeck(@PathVariable Long deckId, @RequestBody List<Card> cards) {
+        Deck deck = deckRepository.findById(deckId).orElseThrow(() -> new RuntimeException("Deck not found"));
+    
+        for (Card card : cards) {
+            if (deck.getCards().stream().anyMatch(c -> c.getCardId().equals(card.getCardId()))) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(cards);
+            }
+            card.setDeck(deck);
         }
-
-        card.setDeck(deck);
-        card = cardRepository.save(card);
-        List<Card> cards = deck.getCards();
-        cards.add(card);
-        deck.setCards(cards);
-
+    
+        List<Card> savedCards = cardRepository.saveAll(cards);
+        List<Card> updatedCards = new ArrayList<>(deck.getCards());
+        updatedCards.addAll(savedCards);
+        deck.setCards(updatedCards);
         deckRepository.save(deck);
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(card);
+    
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCards);
     }
-
+        
     @GetMapping("/{deckId}/cards")
     public ResponseEntity<List<Card>> getCardsForDeck(@PathVariable Long deckId) {
         Deck deck = deckRepository.findById(deckId).orElseThrow();
