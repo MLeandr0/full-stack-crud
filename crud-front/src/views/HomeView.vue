@@ -69,8 +69,8 @@ function navigateToSaveDeck() {
   router.push({
     name: 'save',
     params: {
-      deckName: "",
-      deckId: ""
+      deckName: '',
+      deckId: ''
     }
   })
 }

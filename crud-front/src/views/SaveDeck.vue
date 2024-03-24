@@ -86,7 +86,6 @@ async function addCardLocally() {
   }
 }
 
-
 function clearCardInfoInputs() {
   cardCost.value = ''
   cardDefense.value = ''
@@ -117,7 +116,6 @@ async function insertCardToDeck(deckId: number, temp: Card[]) {
       currentDeck.value.deckId = 0
       return { success: true }
     } else {
-
       return { success: false, error: response.statusText }
     }
   } catch (error) {
@@ -125,7 +123,6 @@ async function insertCardToDeck(deckId: number, temp: Card[]) {
     return { success: false, error }
   }
 }
-
 
 async function editDeck(deckId: number) {
   try {
@@ -152,6 +149,9 @@ async function getDeckCards(deckId: number): Promise<any> {
     try {
       const response = await axios.get(`${url}/decks/${deckId}/cards`)
       displayCardCollection.value = response.data
+      if (tempCards.value.length > 0) {
+        displayCardCollection.value = displayCardCollection.value.concat(tempCards.value)
+      }
     } catch (error) {
       console.error('Error displaying cards of the deck', error)
       throw error
@@ -168,12 +168,20 @@ async function decideDeckAction() {
   } else throw 'Error unknown value'
 }
 
+function removeFromArray(cardId: number) {
+  const index = tempCards.value.findIndex((card) => card.cardId === cardId)
+  if (index !== -1) {
+    tempCards.value.splice(index, 1)
+  }
+}
+
 async function deleteCardFromDeck(cardId: number) {
   try {
     await axios.delete(`${url}/decks/${props.deckId}/cards/${cardId}`)
     getDeckCards(Number(props.deckId))
   } catch (error) {
-    console.error(`Error deleting card ${cardId} from ${props.deckId}`, error)
+    removeFromArray(cardId)
+    getDeckCards(Number(props.deckId))
   }
 }
 
@@ -239,7 +247,13 @@ onMounted(() => {
         <v-col class="fill-height" cols="6">
           <v-card class="fill-height bg-grey-lighten-4" min-width="300px" min-height="50px">
             <v-row class="ma-6">
-              <v-col v-for="(cards, index) in displayCardCollection" :key="index" cols="12" md="6" lg="4">
+              <v-col
+                v-for="(cards, index) in displayCardCollection"
+                :key="index"
+                cols="12"
+                md="6"
+                lg="4"
+              >
                 <v-card v-if="cards" class="ma-0 bg-grey-lighten-5">
                   <v-card-title>{{ cards.cardName }}</v-card-title>
                   <v-card-text>
