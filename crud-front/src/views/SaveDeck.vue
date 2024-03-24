@@ -149,7 +149,6 @@ async function getDeckCards(deckId: number): Promise<any> {
     try {
       const response = await axios.get(`${url}/decks/${deckId}/cards`)
       displayCardCollection.value = response.data
-      console.log(tempCards.value.length)
       if (tempCards.value.length > 0) {
         displayCardCollection.value = displayCardCollection.value.concat(tempCards.value)
       }
