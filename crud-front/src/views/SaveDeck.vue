@@ -70,6 +70,15 @@ async function addCardLocally() {
       deckId: 0
     })
 
+    displayCardCollection.value.push({
+      cardId: 0,
+      cardName: cardName.value || '',
+      cardMana: manaValue,
+      cardDefense: defenseValue,
+      cardLife: lifeValue,
+      deckId: 0
+    })
+
     clearCardInfoInputs()
   } catch (error) {
     console.error('Error adding card to deck', error)
@@ -142,7 +151,7 @@ async function getDeckCards(deckId: number): Promise<any> {
   if (props.deckId !== undefined && isItSavingQuery.value == '1') {
     try {
       const response = await axios.get(`${url}/decks/${deckId}/cards`)
-      tempCards.value = response.data
+      displayCardCollection.value = response.data
     } catch (error) {
       console.error('Error displaying cards of the deck', error)
       throw error
@@ -230,7 +239,7 @@ onMounted(() => {
         <v-col class="fill-height" cols="6">
           <v-card class="fill-height bg-grey-lighten-4" min-width="300px" min-height="50px">
             <v-row class="ma-6">
-              <v-col v-for="(cards, index) in tempCards" :key="index" cols="12" md="6" lg="4">
+              <v-col v-for="(cards, index) in displayCardCollection" :key="index" cols="12" md="6" lg="4">
                 <v-card v-if="cards" class="ma-0 bg-grey-lighten-5">
                   <v-card-title>{{ cards.cardName }}</v-card-title>
                   <v-card-text>
