@@ -93,6 +93,7 @@ onMounted(() => {
           iconName="mdi-content-save"
           buttonText="Save Deck"
           iconColor="#6aa9fd"
+          buttonSize="550px"
           @click="navigateToSaveDeck()"
         />
       </v-col>

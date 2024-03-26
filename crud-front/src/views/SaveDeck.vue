@@ -148,7 +148,7 @@ async function getDeckCards(deckId: number): Promise<any> {
   if (props.deckId !== undefined && isItSavingQuery.value == '1') {
     try {
       const response = await axios.get(`${url}/decks/${deckId}/cards`)
-      displayCardCollection.value = response.data
+      tempCards.value = response.data
       if (tempCards.value.length > 0) {
         displayCardCollection.value = displayCardCollection.value.concat(tempCards.value)
       }
@@ -168,21 +168,11 @@ async function decideDeckAction() {
   } else throw 'Error unknown value'
 }
 
-function removeFromArray(cardId: number) {
+async function deleteCardFromLocalDeck(cardId: number) {
   const index = tempCards.value.findIndex((card) => card.cardId === cardId)
   if (index !== -1) {
     tempCards.value.splice(index, 1)
-  }
-}
-
-async function deleteCardFromDeck(cardId: number) {
-  try {
-    await axios.delete(`${url}/decks/${props.deckId}/cards/${cardId}`)
-    getDeckCards(Number(props.deckId))
-  } catch (error) {
-    removeFromArray(cardId)
-    getDeckCards(Number(props.deckId))
-  }
+  } 
 }
 
 function navigateToHomeScreen() {
@@ -236,6 +226,7 @@ onMounted(() => {
             iconColor="#6aa9fd"
             iconName="mdi-plus"
             buttonText="Add Card"
+            buttonSize="550px"
             @click="addCardLocally"
           />
         </v-col>
@@ -247,8 +238,15 @@ onMounted(() => {
         <v-col class="fill-height" cols="6">
           <v-card class="fill-height bg-grey-lighten-4" min-width="300px" min-height="50px">
             <v-row class="ma-6">
+              <Button
+                iconColor="#6aa9fd"
+                iconName="mdi-plus"
+                buttonText="Add Card"
+                buttonSize="600px"
+                @click="addCardLocally"
+              />
               <v-col
-                v-for="(cards, index) in displayCardCollection"
+                v-for="(cards, index) in tempCards"
                 :key="index"
                 cols="12"
                 md="6"
@@ -262,7 +260,7 @@ onMounted(() => {
                     <div>{{ cards.cardDefense }}</div>
                   </v-card-text>
                   <v-card-actions>
-                    <v-icon @click="deleteCardFromDeck(cards.cardId)">mdi-delete</v-icon>
+                    <v-icon @click="deleteCardFromLocalDeck(cards.cardId)">mdi-delete</v-icon>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -279,11 +277,12 @@ onMounted(() => {
             iconName="mdi-check-bold"
             buttonText="Done"
             iconColor="#6aa9fd"
+            buttonSize="550px"
             @click="decideDeckAction()"
           />
         </v-col>
         <v-col cols="2">
-          <Button iconName="mdi-cancel" buttonText="Cancel" iconColor="#F4511E" to="/" />
+          <Button iconName="mdi-cancel" buttonText="Cancel" iconColor="#F4511E" to="/" buttonSize="550px"/>
         </v-col>
       </v-row>
     </v-container>
